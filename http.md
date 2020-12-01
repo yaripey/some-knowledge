@@ -127,3 +127,83 @@ Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
 - `ETag` is the MD5 hash of the entity and used to check for modifications.
 - `Location` is used when sending a redirection and contains the new URL.
 - `Server` identifies the server generating the message.
+
+
+---
+
+## HTTP Connections
+HTTP uses the TCP transport protocol to make the connection between the client and server. A TCP stream is broken into IP packets, and it ensures that those packets always arrive in the correct order without fail. HTTP is an application layer protocol over TCP, which is over IP.
+
+HTTPS is a secure version of HTTP, inserting an additional layer between HTTP and TCP called TLS or SSL (Transport Layer Security or Secure Sockets Layer). HTTPS communicates over port 443 by default.
+
+Establishing a connection between two endpoints is a multi-step process and invloves the following:
+1. Resolve IP address from host name via DNS
+2. Establish a connection with server
+3. Send a request
+4. Wait for a response
+5. Close connection
+
+Before HTTP/1.1, all connection were closed after a single transaction. To reduce connection-establishment delays, HTTP/1.1 introduced __persisten connections__, long-lived connections that stay open until the client closes them. They are default in HTTP/1.1 and making a single transaction connection requires the client to set the `Connection: close` request header.
+
+### Server-side Connection Handling
+The server mostly listens for incoming connections and processes them when it receives a request. The operations involve:
+1. Establishing a socket to start listening on port 80 (or other)
+2. Receiving the request and parsing the message
+3. Processing the response
+4. Setting response headers
+5. Sending the response to the client
+6. Close the connection if a `Connection: close` request header was found
+
+---
+
+## Identification and Authentication
+
+It is almost mandatory to know who connects to a server for tracking an app's or site's usage and the general interaction patterns of users.
+
+There are a few different ways a server can collect this information, and most websites use a hybrid of these approaches:
+- __Request headers__: `From`, `Referer`, `User-Agent`
+- __Client-IP__ - the IP address of the client
+- __Fat Urls__ - storing state of the current user by modifying the URL and redirecting to a different URL on each click; each click essentially accumulates state.
+- __Cookies__ - the most popular and non-intusive approach
+
+Cookies allow the server to attach information for outgoing response via the `Set-Cookie` response header. For example: `Set-Cookie: sessino-id=12345ABC; username=testtest`. 
+
+A server can also restrict the cookies to a specific `domain` and `path`, and it can make them persistent with an `expires` value. Cookies are automatically sent by the browser for each request made to a server ,and the browser ensures that only the `domain`- and `path`-specific cookies are sent in the request. The request header `Cookie: name-value [; name2=value2]` is used to send these cookies to the server.
+
+### Authentication
+
+HTTP does support a rudimentary form of authentication called __Basic Authentication__, as well as the more secure __Digest Authentication__.
+
+In Basic Authentication, the server initially denies the client's request with a `WWW-Authenticate` response header and a `401 Unauthorized` status code. On seeing this header, the browser displays a login dialog, prompting for a username and password. This information is sent in a base-64 encoded format in the `Authentication` request header. The server can now validate the request and allow access if the credentials are valid. Some server might also send an `Authentication-Info` header containing additional authentication details.
+
+Digest Authentications basicaly does the same thing, but in a more secure way. Still, websites typically use Basic Authenticatoin because of its simplicity.
+
+### Certificates
+One of the requirement of starting HTTPS server is getting a certificate. These are issued by a Certificate Authority (CA) and vouch for your identity on the web. The CAs are the guardians of the PKI. The most common form of certificates is the _X.509 v3 standard_, which contains information, such as:
+
+- the certificate issuer
+- the algorithm used for the certificate
+- the subject name or organization for whom this cert is created
+- the public key information for the subject
+- the Certification Authority Signature, using the specified signing algorithm.
+
+When a client makes a request over HTTPS, it first tries to locate a certificate on the server and verify it against its known list of CAs. 
+
+---
+
+## HTTP Caching
+
+Caches are used at several places in the network infrastructure, from the browser to the origin server. Depending on where it is located, a cache can be categorized as:
+- __Private__: within a browser, caches usernames, passwords, URLs, browsing history and web content. 
+- __Public__: deployed as caching proxies between the server and client. 
+
+### Cache Processing
+The process of maintaining a cache is quite similar:
+
+- __Recieve__ request message
+- __Parse__ the URL and headers
+- __Lookup__ a local copy; otherwise, fetch and store locally
+- Do a __freshness check__ to determine the age of the content in the cache; make a request to refresh the content only if necessary
+- Create the __response__ from the cached body and updated headers
+- __Send__ the response back to client
+- Optionally, __log__ the transaction
