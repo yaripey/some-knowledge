@@ -2,10 +2,10 @@
 
 ## TODO
 There are some improvements that can be done to these notes, but I don't have time for them now. These are:
-- restructure for a cleaner view
-- table of contents at the beginning
-- $ git rebase
-- info on detaching HEAD
+- [ ] restructure for a cleaner view
+- [ ] table of contents at the beginning
+- [ ] $ git rebase
+- [ ] info on detaching HEAD
 
 ---
 
@@ -34,6 +34,19 @@ Another usefull flag is *--oneline*. It only shows the first 7 characters of SHA
 We can also provide first 7 characters of the SHA of the commit as the last argument for *git log* command to start viewing history from that particular commit. 
 
 Too see commits from all branches in a visual way we can use *git log --oneline --graph --all*.
+
+#### --author
+You can specify whose commits you want to see instead of all of them. The syntax is like that: `git log --author=Tester`, where `Tester`'s the name. If there are multiple authors that fall under that search criteria then both of them will be listed. Of course, we can specify it like that: `git log --author="First Tester"`. Notice the quotes.
+
+#### --grep
+This flag allows you to filter commits by some words. We can run the command differently, examples:
+- `git log --grep bug`
+- `git log --grep=bug`
+- `git log --grep="bug"`
+All of those are right and will work.
+
+#### Tracking branch
+When we use git log to view history of our repo, we can see which commits branches point to. And when we use remote repos, we see so-called __tracking branches__. Those are just representations of branches on the remote repos. Usually they are represented by their remote shortname followed by __/__ and then the name of the branch. They are not showing the current state of the branch on the remote repo though, only the state that was recordered when you last checked (for example, when you last pulled the remote repo).
 
 ---
 
@@ -212,4 +225,32 @@ This command will create a local copy of the provided repository in the current 
 This command will download all current commits from the remote to your remote branch.
 
 ### $ git pull
-This command will do the same as the _git fetch_ command but will also incorporate all changes to your local repository.
+This command will do the same as the _git fetch_ command but will also incorporate all changes to your local repository. You can provide the shortname for a particular remote repo and the branch you want to pull. Under the hood this command will _fetch_ commits to your __tracking branch__ and the merge you __local branch__ with __tracking branch__.
+
+These is a scenario when you have unpushed commits on your branches, and there are unpulled commits on the remote repo. In this case, _git pull_ won't run. What can you do instead, you can _git fetch_ those changes from remote repo, look though them, and if everything's fine you can just merge you __local branch__(that is up to date with your local changes) to the __tracking branch__(that is up to date with changes in the remote repo) and then you can push the new commit to the remote.
+
+### $ git push
+This command works almost exactly like the _git pull_ one, but backwards. It will send your commits to your remote repository. And you can provide the shortname for remote repo as well as the name of the remote branch.
+
+### $ git remote
+Allows you to work with remote repositories. Call without parameters will list all remotes for the current repository. 
+
+#### -v
+If you'll run `git remote -v`, the command will return full paths to the remote repositories.
+
+#### add
+With _git remote_ you can add new remote repository for your current one. You can run it like this: `git remote add remotename remoteurl`. You'll need to specifiy the _shortname_ for your remote so you can access it with ease. Followed by the remote repo url.
+
+### $ git shortlog
+This command will list all users that had created commits to the current repository and will show the names of their commits. It will sort them by name alphabetically.
+
+#### -s
+If you run the command with this flag it will only show the number of commits everyone's made.
+
+#### -n
+If you run the command with this flag it will sort the list by the number of commits everyone's made.
+
+## Forking
+When someone says `to fork` it means `to create an identical copy of a repo`. We use works if we want to work on someone else's remote repositories. Forks are not a part of Git but a part of remote repo hosting services like GitHub. If we want to make or propose changes on someone else's remote repository we can't just clone it, make changes, commit and push them. We are not the owner of that repo. The answer to this problem is _Forking_.
+
+When we press _Fork_ button on GitHub's web interface, GitHub creates an identical copy of that repository on our account. Now, we are the owner of that copy and have all right's to change it how we want. We now can make some commits and create a __pull request__ to the original repo, so the owner of it can consider incorporating our changes to the original. 
