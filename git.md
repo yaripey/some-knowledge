@@ -177,6 +177,13 @@ This command also can create branches if we provide it with the *-b* tag. The di
 #### Reverting changes of a file
 We can use _git checkout_ to revert a file to a state that is was in at some point, we just need to know commit's SHA. We can use it like this: _git checkout 123123 hello.txt_.
 
+### $ git rebase
+This command allows you to squash several commits into one. You just need to select the commit you want to squash to and follow the instructions.
+
+#### -i
+This flag allows interactive work with rebase command.
+
+
 ## Merging
 
 ### $ git merge
@@ -232,6 +239,12 @@ These is a scenario when you have unpushed commits on your branches, and there a
 ### $ git push
 This command works almost exactly like the _git pull_ one, but backwards. It will send your commits to your remote repository. And you can provide the shortname for remote repo as well as the name of the remote branch.
 
+#### -f
+Sometimes Git will reject your attempt to push commits. For example, after rebasing, if the result of the push would be a loss of some commits. You need to carefully read through all error messages and tips git gives you, and if necessary you can _push forcefully_ with `git push -f`.
+
+### git cherry-pick
+This command allows you to copy several commits below you current location.
+
 ### $ git remote
 Allows you to work with remote repositories. Call without parameters will list all remotes for the current repository. 
 
@@ -240,6 +253,9 @@ If you'll run `git remote -v`, the command will return full paths to the remote 
 
 #### add
 With _git remote_ you can add new remote repository for your current one. You can run it like this: `git remote add remotename remoteurl`. You'll need to specifiy the _shortname_ for your remote so you can access it with ease. Followed by the remote repo url.
+
+#### rename
+This parameter allows us to rename remotes. Like this: `git remote rename old-name new-name`.
 
 ### $ git shortlog
 This command will list all users that had created commits to the current repository and will show the names of their commits. It will sort them by name alphabetically.
@@ -263,3 +279,6 @@ Pull request is a request to merge some commits from another repo. It works like
 4. You push those changes to the fork you've created earlier.
 5. Now you create a `Pull Request` via GitHub interface.
 6. If the `Pull Request` is accepted, your commits are now appear in the original repository and GitHub creates a new commit to merge these new commits with existing branch.
+
+### Upstream
+When we create a fork of the repo to work on it, while we work there might be some commits in the original repository over time. So our fork and cloned lcoal repos become out of date. When we clone a repo, git creates a connection that is named _origin_. We can manually create a connection to the original repo. This connection typically is called __upstream__. We then can fetch commits from the original repo. We'll have a __tracking branch__ called __upstream/master__. We can now merge our local master to this fetched branch. Since we are making our changes on a separate branch, our local master will __fast-forward__ to the __upstream/master__.
