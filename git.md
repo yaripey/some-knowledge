@@ -254,3 +254,12 @@ If you run the command with this flag it will sort the list by the number of com
 When someone says `to fork` it means `to create an identical copy of a repo`. We use works if we want to work on someone else's remote repositories. Forks are not a part of Git but a part of remote repo hosting services like GitHub. If we want to make or propose changes on someone else's remote repository we can't just clone it, make changes, commit and push them. We are not the owner of that repo. The answer to this problem is _Forking_.
 
 When we press _Fork_ button on GitHub's web interface, GitHub creates an identical copy of that repository on our account. Now, we are the owner of that copy and have all right's to change it how we want. We now can make some commits and create a __pull request__ to the original repo, so the owner of it can consider incorporating our changes to the original. 
+
+### Pull request
+Pull request is a request to merge some commits from another repo. It works like this:
+1. You fork an existing repository which you want to change.
+2. You clone it to your local machine.
+3. You make some changes and commit them.
+4. You push those changes to the fork you've created earlier.
+5. Now you create a `Pull Request` via GitHub interface.
+6. If the `Pull Request` is accepted, your commits are now appear in the original repository and GitHub creates a new commit to merge these new commits with existing branch.
